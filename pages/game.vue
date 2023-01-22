@@ -1,16 +1,49 @@
 <template>
-
+  {{ data }}
 </template>
 
 <script>
 export default {
   data() {
     return {
-      
+      maxRepeat: {
+        action: 2,
+        verite: 1,
+      },
+      data: {
+        verite: null,
+        action: null,
+      },
+      test: [],
+      game: {},
     }
   },
   methods: {
-
+    async getData(mode) {
+      const supabase = useSupabaseClient();
+      let respons = await supabase
+      .from(`verite_${mode}`)
+      .select()
+      this.data.verite = respons.data;
+      respons = await supabase
+      .from(`action_${mode}`)
+      .select()
+      this.data.action = respons.data;
+      console.log(this.test);
+    },
+    Find(table, player) {
+      console.log(Math.random());
+    }
+  },
+  mounted() {
+    if (localStorage.startedGameId)
+    {
+      const actualGames = JSON.parse(localStorage.games)
+      this.game = actualGames.filter(element => element.id == localStorage.startedGameId);
+    }
+    this.getData(this.game[0].gameDificulty);
+    // const respons = await useAsyncData('tasks', asyn)
+    // console.log(supabase.from('action_soft').select());
   },
   created() {
     useHead({

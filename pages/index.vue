@@ -7,18 +7,15 @@
     <div class="bg-gradient-to-br from-[#242424] to-[#1A1A1A] lg:w-3/4 flex justify-center py-24 lg:pt-64 rounded-t-6xl lg:rounded-l-6xl">
       <div class="flex flex-col gap-8 w-[412px]">
         <h2 class="text-4xl font-bold">Bienvenue</h2>
-        <ButtonInline content="Nouvelle Partie" type="primary" link="newGame" />
+        <ButtonInline content="Nouvelle Partie" button_style="primary" link="newGame" />
         <div class="flex flex-col gap-1">
           <p class="text-2xl font-bold">Parties en cours</p>
           <div class="flex flex-col gap-4">
-            <ButtonInline content="Joueur 1 | Joueur 2" type="secondary" />
-            <ButtonInline content="Joueur 1 | Joueur 2 | Joueur 3" type="secondary" />
-            <ButtonInline content="Joueur 1 | Joueur 2" type="secondary" />
-            <ButtonInline content="Joueur 1 | Joueur 2" type="secondary" />
-            <ButtonInline content="Joueur 1 | Joueur 2" type="secondary" />
-            <ButtonInline content="Joueur 1 | Joueur 2" type="secondary" />
-            <ButtonInline content="Joueur 1 | Joueur 2" type="secondary" />
-            <ButtonInline content="Joueur 1 | Joueur 2" type="secondary" />
+            <div v-for="game in games" class="flex gap-1">
+              <ButtonInline @click="playGame(game.id)" class="grow" :content="ReturnPlayers(game.players) + ' ' + game.id" button_style="secondary" />
+              <ButtonInline @click="RemoveGame(game)" content="Suprimmer" button_style="secondary" />
+            </div>
+            <p v-if="games.length < 1" class="text-center">Aucune partie en cour</p>
           </div>
         </div>
       </div>
@@ -30,11 +27,36 @@
 export default {
   data() {
     return {
-      
+      games: [],
     }
   },
   methods: {
-
+    MountGames() {
+      if (localStorage.games)
+        this.games = JSON.parse(localStorage.games);
+    },
+    RemoveGame(game) {
+      this.games = this.games.filter(element => element != game);
+      if (localStorage.games) {
+        localStorage.setItem('games', JSON.stringify(this.games));
+      }
+    },
+    ReturnPlayers(players) {
+      let rtVal = "";
+      for (let i = 0; i < players.length; i++) {
+        rtVal += players[i].name;
+        if (i < players.length - 1)
+          rtVal += " | ";
+      }
+      return (rtVal)
+    },
+    playGame(id) {
+      localStorage.startedGameId = id;
+      this.$router.push('/game')
+    },
+  },
+  mounted() {
+    this.MountGames();
   },
   created() {
     useHead({
