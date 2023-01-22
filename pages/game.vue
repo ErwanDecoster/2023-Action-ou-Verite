@@ -14,7 +14,6 @@ export default {
         verite: null,
         action: null,
       },
-      test: [],
       game: {},
     }
   },
@@ -29,7 +28,6 @@ export default {
       .from(`action_${mode}`)
       .select()
       this.data.action = respons.data;
-      console.log(this.test);
     },
     Find(table, player) {
       console.log(Math.random());
